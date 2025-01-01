@@ -3,101 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vexo - AI-powered geometric art generation</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>VEXO | Digital Geometry</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <main class="container">
-        <h1 class="logo glitch" data-text="VEXO">VEXO</h1>
-        <p class="subtitle">AI-powered geometric art generation</p>
+    <div class="app">
+        <header>
+            <h1 class="logo">VEXO</h1>
+            <div class="glow-line"></div>
+        </header>
 
-        <div class="features">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <span class="circle"></span>
-                    AI Core
+        <main>
+            <div class="canvas-wrapper">
+                <canvas id="canvas"></canvas>
+                <div class="loading-overlay hidden">
+                    <div class="scanner-line"></div>
                 </div>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <span class="circle"></span>
-                    Geometric Engine
+
+            <div class="controls">
+                <div class="control-group">
+                    <select id="pattern" class="neo-select">
+                        <option value="helix">Helix</option>
+                        <option value="matrix">Matrix</option>
+                        <option value="nexus">Nexus</option>
+                        <option value="pulse">Pulse</option>
+                    </select>
+                    
+                    <button id="generate" class="neo-button">
+                        <span class="button-text">Generate</span>
+                        <span class="button-glow"></span>
+                    </button>
+                </div>
+
+                <div class="control-group">
+                    <label for="density">Density</label>
+                    <input type="range" id="density" min="1" max="100" value="50">
+                    
+                    <label for="speed">Speed</label>
+                    <input type="range" id="speed" min="1" max="100" value="50">
+                </div>
+
+                <div class="color-picker">
+                    <button class="color-btn active" data-color="#00fff2"></button>
+                    <button class="color-btn" data-color="#ff00ff"></button>
+                    <button class="color-btn" data-color="#39ff14"></button>
                 </div>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <span class="circle"></span>
-                    Pattern Recognition
-                </div>
-            </div>
-        </div>
-
-        <p class="description">
-            An autonomous system that creates mathematical art in real-time, transforming complex geometric formulas into visual compositions.
-        </p>
-
-        <div class="canvas-container">
-            <canvas id="geometryCanvas"></canvas>
-        </div>
-
-        <div class="controls">
-            <button id="generateBtn" class="cyber-button">
-                <span class="cyber-button__text">Generate</span>
-            </button>
-            
-            <div class="slider-container">
-                <label for="complexity">Complexity</label>
-                <input type="range" id="complexity" min="3" max="20" value="6">
-            </div>
-
-            <div class="color-scheme">
-                <button class="color-preset neon-blue active"></button>
-                <button class="color-preset neon-purple"></button>
-                <button class="color-preset neon-green"></button>
-            </div>
-        </div>
-
-        <div class="buttons">
-            <a href="#" class="btn btn-social">𝕏</a>
-            <a href="#" class="btn btn-social">
-                <div class="pill-icon">
-                    <div class="pill-half black"></div>
-                    <div class="pill-half white"></div>
-                </div>
-            </a>
-            <a href="#" class="btn btn-primary">Launch Application →</a>
-        </div>
-
-        <div class="capabilities">
-            <div class="capability">
-                <h3>Autonomous Formula Creation</h3>
-                <p>Independently develops geometric formulas based on mathematical principles</p>
-            </div>
-            <div class="capability">
-                <h3>Real-time Visualization</h3>
-                <p>Watch calculations and geometric constructions unfold in real-time</p>
-            </div>
-            <div class="capability">
-                <h3>Pattern Recognition</h3>
-                <p>Self-evolving system that learns and adapts its artistic approach</p>
-            </div>
-            <div class="capability">
-                <h3>Mathematical Proofs</h3>
-                <p>Generates mathematical proofs for each artwork it creates</p>
-            </div>
-            <div class="capability">
-                <h3>Live Construction</h3>
-                <p>Displays the step-by-step construction process of each piece</p>
-            </div>
-        </div>
-
-        <footer>
-            <p>Vexo v1.0.0 • 2025</p>
-        </footer>
-    </main>
-    <script src="js/main.js"></script>
+        </main>
+    </div>
     <script src="script.js"></script>
 </body>
 </html> 

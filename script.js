@@ -1,263 +1,160 @@
-class GeometryGenerator {
+class VexoGenerator {
     constructor() {
-        this.canvas = document.getElementById('geometryCanvas');
+        this.canvas = document.getElementById('canvas');
         this.ctx = this.canvas.getContext('2d');
-        this.complexity = 6;
-        this.currentColor = '#00f3ff';
+        this.activeColor = '#00fff2';
+        this.density = 50;
+        this.speed = 50;
+        this.isAnimating = false;
+        this.currentPattern = 'helix';
         
-        this.resizeCanvas();
+        this.setupCanvas();
         this.setupEventListeners();
-        this.isGenerating = false;
-        this.currentPattern = 'polygon';
-        this.setupPatternSelector();
+        this.generate();
     }
 
-    resizeCanvas() {
+    setupCanvas() {
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;
+        window.addEventListener('resize', () => {
+            this.canvas.width = this.canvas.offsetWidth;
+            this.canvas.height = this.canvas.offsetHeight;
+            this.generate();
+        });
     }
 
     setupEventListeners() {
-        window.addEventListener('resize', () => this.resizeCanvas());
-        
-        document.getElementById('generateBtn').addEventListener('click', () => this.generate());
-        
-        document.getElementById('complexity').addEventListener('input', (e) => {
-            this.complexity = parseInt(e.target.value);
+        document.getElementById('generate').addEventListener('click', () => this.generate());
+        document.getElementById('pattern').addEventListener('change', (e) => {
+            this.currentPattern = e.target.value;
             this.generate();
         });
 
-        document.querySelectorAll('.color-preset').forEach(btn => {
+        document.getElementById('density').addEventListener('input', (e) => {
+            this.density = e.target.value;
+            this.generate();
+        });
+
+        document.getElementById('speed').addEventListener('input', (e) => {
+            this.speed = e.target.value;
+            if (this.isAnimating) this.generate();
+        });
+
+        document.querySelectorAll('.color-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                document.querySelector('.color-preset.active').classList.remove('active');
+                document.querySelector('.color-btn.active').classList.remove('active');
                 e.target.classList.add('active');
-                this.currentColor = getComputedStyle(e.target).backgroundColor;
+                this.activeColor = e.target.dataset.color;
                 this.generate();
             });
         });
     }
 
-    setupPatternSelector() {
-        const selector = document.createElement('select');
-        selector.className = 'pattern-selector';
-        
-        const patterns = {
-            'polygon': 'Polygon',
-            'grid': 'Grid',
-            'spiral': 'Spiral',
-            'mandala': 'Mandala',
-            'vortex': 'Vortex',
-            'starburst': 'Starburst'
-        };
-
-        Object.entries(patterns).forEach(([value, label]) => {
-            const option = document.createElement('option');
-            option.value = value;
-            option.textContent = label;
-            selector.appendChild(option);
-        });
-
-        selector.addEventListener('change', (e) => {
-            this.currentPattern = e.target.value;
-            this.generate();
-        });
-
-        const controls = document.querySelector('.controls');
-        controls.insertBefore(selector, controls.firstChild);
-    }
-
     async generate() {
-        if (this.isGenerating) return;
-        this.isGenerating = true;
-
-        const container = document.querySelector('.canvas-container');
-        container.classList.add('generating');
+        const overlay = document.querySelector('.loading-overlay');
+        overlay.classList.remove('hidden');
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.fillStyle = '#050507';
+        this.ctx.fillStyle = '#12121f';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         const patterns = {
-            'polygon': () => this.drawPolygon(),
-            'grid': () => this.drawGrid(),
-            'spiral': () => this.drawSpiral(),
-            'mandala': () => this.drawMandala(),
-            'vortex': () => this.drawVortex(),
-            'starburst': () => this.drawStarburst()
+            helix: () => this.drawHelix(),
+            matrix: () => this.drawMatrix(),
+            nexus: () => this.drawNexus(),
+            pulse: () => this.drawPulse()
         };
 
         await patterns[this.currentPattern]();
+        overlay.classList.add('hidden');
+    }
+
+    async drawHelix() {
+        const centerX = this.canvas.width / 2;
+        const centerY = this.canvas.height / 2;
+        const maxRadius = Math.min(this.canvas.width, this.canvas.height) * 0.4;
         
-        container.classList.remove('generating');
-        this.isGenerating = false;
-    }
-
-    createAnimatedPoint(x, y) {
-        const point = document.createElement('div');
-        point.className = 'pattern-point';
-        point.style.left = `${x}px`;
-        point.style.top = `${y}px`;
-        document.querySelector('.canvas-container').appendChild(point);
-        
-        setTimeout(() => point.remove(), 500);
-    }
-
-    async drawWithAnimation(x, y) {
-        this.createAnimatedPoint(x, y);
-        await new Promise(resolve => setTimeout(resolve, 10));
-    }
-
-    async drawMandala() {
-        const centerX = this.canvas.width / 2;
-        const centerY = this.canvas.height / 2;
-        const maxRadius = Math.min(this.canvas.width, this.canvas.height) * 0.4;
-
-        this.ctx.strokeStyle = this.currentColor;
+        this.ctx.strokeStyle = this.activeColor;
         this.ctx.lineWidth = 2;
 
-        for (let ring = 0; ring < this.complexity; ring++) {
-            const petals = (ring + 1) * 8;
-            const radius = (maxRadius * (ring + 1)) / this.complexity;
-
-            this.ctx.beginPath();
-            for (let i = 0; i <= petals; i++) {
-                const angle = (i / petals) * Math.PI * 2;
-                const r = radius * (1 + Math.sin(angle * 4) * 0.2);
-                const x = centerX + Math.cos(angle) * r;
-                const y = centerY + Math.sin(angle) * r;
-
-                if (i === 0) this.ctx.moveTo(x, y);
-                else this.ctx.lineTo(x, y);
-
-                await this.drawWithAnimation(x, y);
-            }
-            this.ctx.closePath();
-            this.ctx.stroke();
-        }
-    }
-
-    async drawVortex() {
-        const centerX = this.canvas.width / 2;
-        const centerY = this.canvas.height / 2;
-        const maxRadius = Math.min(this.canvas.width, this.canvas.height) * 0.4;
-
-        this.ctx.strokeStyle = this.currentColor;
-        this.ctx.lineWidth = 2;
-        this.ctx.beginPath();
-
-        for (let i = 0; i < 360 * this.complexity; i += 5) {
+        for (let i = 0; i < 360 * (this.density / 25); i += 5) {
             const angle = (i * Math.PI) / 180;
-            const radius = (maxRadius * i) / (360 * this.complexity);
-            const wobble = Math.sin(angle * 8) * 20;
-            const x = centerX + Math.cos(angle) * (radius + wobble);
-            const y = centerY + Math.sin(angle) * (radius + wobble);
-            
-            if (i === 0) this.ctx.moveTo(x, y);
-            else this.ctx.lineTo(x, y);
-
-            await this.drawWithAnimation(x, y);
-        }
-        this.ctx.stroke();
-    }
-
-    async drawStarburst() {
-        const centerX = this.canvas.width / 2;
-        const centerY = this.canvas.height / 2;
-        const maxRadius = Math.min(this.canvas.width, this.canvas.height) * 0.4;
-
-        this.ctx.strokeStyle = this.currentColor;
-        this.ctx.lineWidth = 2;
-
-        for (let i = 0; i < this.complexity * 20; i++) {
-            const angle = (i / (this.complexity * 20)) * Math.PI * 2;
-            const length = maxRadius * Math.random();
-            
-            const x1 = centerX + Math.cos(angle) * length * 0.2;
-            const y1 = centerY + Math.sin(angle) * length * 0.2;
-            const x2 = centerX + Math.cos(angle) * length;
-            const y2 = centerY + Math.sin(angle) * length;
-
-            this.ctx.beginPath();
-            this.ctx.moveTo(x1, y1);
-            this.ctx.lineTo(x2, y2);
-            this.ctx.stroke();
-
-            await this.drawWithAnimation(x2, y2);
-        }
-    }
-
-    async drawPolygon() {
-        const centerX = this.canvas.width / 2;
-        const centerY = this.canvas.height / 2;
-        const radius = Math.min(this.canvas.width, this.canvas.height) * 0.4;
-
-        this.ctx.strokeStyle = this.currentColor;
-        this.ctx.lineWidth = 2;
-
-        for (let i = 0; i < this.complexity; i++) {
-            const points = this.complexity + i;
-            this.ctx.beginPath();
-            for (let j = 0; j <= points; j++) {
-                const angle = (j / points) * Math.PI * 2;
-                const x = centerX + Math.cos(angle) * (radius - (i * 20));
-                const y = centerY + Math.sin(angle) * (radius - (i * 20));
-                
-                if (j === 0) this.ctx.moveTo(x, y);
-                else this.ctx.lineTo(x, y);
-
-                await this.drawWithAnimation(x, y);
-            }
-            this.ctx.closePath();
-            this.ctx.stroke();
-        }
-    }
-
-    drawGrid() {
-        const size = this.canvas.width / this.complexity;
-        this.ctx.strokeStyle = this.currentColor;
-        this.ctx.lineWidth = 2;
-
-        for (let i = 0; i <= this.complexity; i++) {
-            for (let j = 0; j <= this.complexity; j++) {
-                const x = i * size;
-                const y = j * size;
-                
-                this.ctx.beginPath();
-                this.ctx.moveTo(x, 0);
-                this.ctx.lineTo(x, this.canvas.height);
-                this.ctx.stroke();
-
-                this.ctx.beginPath();
-                this.ctx.moveTo(0, y);
-                this.ctx.lineTo(this.canvas.width, y);
-                this.ctx.stroke();
-            }
-        }
-    }
-
-    drawSpiral() {
-        const centerX = this.canvas.width / 2;
-        const centerY = this.canvas.height / 2;
-        const maxRadius = Math.min(this.canvas.width, this.canvas.height) * 0.4;
-
-        this.ctx.strokeStyle = this.currentColor;
-        this.ctx.lineWidth = 2;
-        this.ctx.beginPath();
-
-        for (let i = 0; i < 360 * this.complexity; i++) {
-            const angle = (i * Math.PI) / 180;
-            const radius = (maxRadius * i) / (360 * this.complexity);
+            const radius = (maxRadius * i) / (360 * (this.density / 25));
             const x = centerX + Math.cos(angle) * radius;
             const y = centerY + Math.sin(angle) * radius;
             
-            if (i === 0) this.ctx.moveTo(x, y);
-            else this.ctx.lineTo(x, y);
+            this.ctx.beginPath();
+            this.ctx.arc(x, y, 2, 0, Math.PI * 2);
+            this.ctx.fill();
+            
+            await new Promise(r => setTimeout(r, 100 / this.speed));
         }
-        this.ctx.stroke();
+    }
+
+    async drawMatrix() {
+        const size = this.canvas.width / (this.density / 5);
+        this.ctx.strokeStyle = this.activeColor;
+        this.ctx.lineWidth = 2;
+
+        for (let x = 0; x <= this.canvas.width; x += size) {
+            for (let y = 0; y <= this.canvas.height; y += size) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(x, y);
+                this.ctx.lineTo(x + size/2, y + size/2);
+                this.ctx.stroke();
+                
+                await new Promise(r => setTimeout(r, 50 / this.speed));
+            }
+        }
+    }
+
+    async drawNexus() {
+        const points = [];
+        const numPoints = this.density / 2;
+        
+        for (let i = 0; i < numPoints; i++) {
+            points.push({
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height
+            });
+        }
+
+        this.ctx.strokeStyle = this.activeColor;
+        this.ctx.lineWidth = 1;
+
+        for (let i = 0; i < points.length; i++) {
+            for (let j = i + 1; j < points.length; j++) {
+                const distance = Math.hypot(points[i].x - points[j].x, points[i].y - points[j].y);
+                if (distance < 150) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(points[i].x, points[i].y);
+                    this.ctx.lineTo(points[j].x, points[j].y);
+                    this.ctx.stroke();
+                    
+                    await new Promise(r => setTimeout(r, 20 / this.speed));
+                }
+            }
+        }
+    }
+
+    async drawPulse() {
+        const centerX = this.canvas.width / 2;
+        const centerY = this.canvas.height / 2;
+        const maxRadius = Math.min(this.canvas.width, this.canvas.height) * 0.4;
+
+        this.ctx.strokeStyle = this.activeColor;
+        this.ctx.lineWidth = 2;
+
+        for (let radius = 0; radius < maxRadius; radius += maxRadius / (this.density / 2)) {
+            this.ctx.beginPath();
+            this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            this.ctx.stroke();
+            
+            await new Promise(r => setTimeout(r, 100 / this.speed));
+        }
     }
 }
 
-// Initialize the generator when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    new GeometryGenerator();
+    new VexoGenerator();
 }); 
