@@ -53,6 +53,7 @@ header {
     margin-bottom: 2rem;
     overflow: hidden;
     box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+    position: relative;
 }
 
 #geometryCanvas {
@@ -159,4 +160,53 @@ input[type="range"]::-webkit-slider-thumb {
     100% {
         text-shadow: 0 0 10px var(--neon-blue);
     }
+}
+
+.generating {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.pattern-point {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--neon-blue);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    animation: fadePoint 0.5s ease-out forwards;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); }
+    50% { box-shadow: 0 0 40px rgba(0, 243, 255, 0.4); }
+    100% { box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); }
+}
+
+@keyframes fadePoint {
+    0% { 
+        opacity: 1;
+        transform: scale(2);
+    }
+    100% { 
+        opacity: 0;
+        transform: scale(0);
+    }
+}
+
+.pattern-selector {
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 1rem;
+    background: var(--bg-darker);
+    border: 2px solid var(--neon-blue);
+    color: var(--neon-blue);
+    padding: 0.5rem;
+    font-family: 'Courier New', monospace;
+    cursor: pointer;
+}
+
+.pattern-selector option {
+    background: var(--bg-darker);
+    color: var(--neon-blue);
 } 
