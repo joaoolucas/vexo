@@ -6,10 +6,11 @@
     <title>Vexo - AI-powered geometric art generation</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <main class="container">
-        <h1 class="logo">VEXO</h1>
+        <h1 class="logo glitch" data-text="VEXO">VEXO</h1>
         <p class="subtitle">AI-powered geometric art generation</p>
 
         <div class="features">
@@ -36,6 +37,27 @@
         <p class="description">
             An autonomous system that creates mathematical art in real-time, transforming complex geometric formulas into visual compositions.
         </p>
+
+        <div class="canvas-container">
+            <canvas id="geometryCanvas"></canvas>
+        </div>
+
+        <div class="controls">
+            <button id="generateBtn" class="cyber-button">
+                <span class="cyber-button__text">Generate</span>
+            </button>
+            
+            <div class="slider-container">
+                <label for="complexity">Complexity</label>
+                <input type="range" id="complexity" min="3" max="20" value="6">
+            </div>
+
+            <div class="color-scheme">
+                <button class="color-preset neon-blue active"></button>
+                <button class="color-preset neon-purple"></button>
+                <button class="color-preset neon-green"></button>
+            </div>
+        </div>
 
         <div class="buttons">
             <a href="#" class="btn btn-social">𝕏</a>
@@ -76,5 +98,6 @@
         </footer>
     </main>
     <script src="js/main.js"></script>
+    <script src="script.js"></script>
 </body>
 </html> 
