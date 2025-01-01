@@ -1,18 +1,22 @@
 // Create canvas for moving dots
 function createMovingDots() {
     const canvas = document.createElement('canvas');
+    
+    // Update canvas styles for proper positioning
     canvas.style.position = 'fixed';
     canvas.style.top = '0';
     canvas.style.left = '0';
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
+    canvas.style.width = '100vw';
+    canvas.style.height = '100vh';
     canvas.style.zIndex = '-1';
-    canvas.style.opacity = '0.08';
-    document.body.appendChild(canvas);
+    canvas.style.opacity = '0.15';
+    canvas.style.pointerEvents = 'none'; // Ensure canvas doesn't interfere with clicks
+    
+    document.body.insertBefore(canvas, document.body.firstChild); // Insert at the beginning of body
 
     const ctx = canvas.getContext('2d');
     const dots = [];
-    const numDots = 150; // Increased number of dots
+    const numDots = 200; // Increased number of dots for better visibility
     
     function resize() {
         canvas.width = window.innerWidth;
@@ -26,10 +30,10 @@ function createMovingDots() {
         dots.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            radius: Math.random() * 1.2 + 0.3, // Smaller dots
-            vx: (Math.random() - 0.5) * 0.2, // Slower movement
-            vy: (Math.random() - 0.5) * 0.2,
-            alpha: Math.random() * 0.4 + 0.1 // More subtle opacity
+            radius: Math.random() * 1.5 + 0.5, // Slightly larger dots
+            vx: (Math.random() - 0.5) * 0.15, // Slower movement
+            vy: (Math.random() - 0.5) * 0.15,
+            alpha: Math.random() * 0.3 + 0.2 // Increased base opacity
         });
     }
 
@@ -61,5 +65,9 @@ function createMovingDots() {
     animate();
 }
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', createMovingDots); 
+// Make sure DOM is loaded before creating canvas
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', createMovingDots);
+} else {
+    createMovingDots();
+} 
