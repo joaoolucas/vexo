@@ -42,14 +42,13 @@ function createMovingDots() {
     canvas.style.width = '100%';
     canvas.style.height = '100%';
     canvas.style.zIndex = '-1';
-    canvas.style.opacity = '0.1';
+    canvas.style.opacity = '0.15';
     document.body.appendChild(canvas);
 
     const ctx = canvas.getContext('2d');
     const dots = [];
-    const numDots = 50;
-
-    // Set canvas size
+    const numDots = 100;
+    
     function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -57,21 +56,21 @@ function createMovingDots() {
     resize();
     window.addEventListener('resize', resize);
 
-    // Create dots
+    // Create dots with varying sizes
     for (let i = 0; i < numDots; i++) {
         dots.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            radius: Math.random() * 2,
-            vx: (Math.random() - 0.5) * 0.5,
-            vy: (Math.random() - 0.5) * 0.5
+            radius: Math.random() * 1.5 + 0.5,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            alpha: Math.random() * 0.5 + 0.5
         });
     }
 
     // Animate dots
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#ffffff';
 
         dots.forEach(dot => {
             // Move dot
@@ -84,8 +83,9 @@ function createMovingDots() {
             if (dot.y < 0) dot.y = canvas.height;
             if (dot.y > canvas.height) dot.y = 0;
 
-            // Draw dot
+            // Draw dot with varying opacity
             ctx.beginPath();
+            ctx.fillStyle = `rgba(255, 255, 255, ${dot.alpha})`;
             ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
             ctx.fill();
         });
