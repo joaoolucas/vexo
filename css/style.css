@@ -21,6 +21,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .container {
@@ -53,11 +55,12 @@ body {
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
 }
 
-.feature-card:nth-child(1) { background: var(--accent-green); }
-.feature-card:nth-child(2) { background: var(--accent-blue); }
-.feature-card:nth-child(3) { background: var(--accent-purple); }
+.feature-card:nth-child(1):hover { background: var(--accent-green); }
+.feature-card:nth-child(2):hover { background: var(--accent-blue); }
+.feature-card:nth-child(3):hover { background: var(--accent-purple); }
 
 .feature-icon {
     display: flex;
@@ -93,6 +96,7 @@ body {
     color: var(--text-color);
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
+    background: rgba(0, 0, 0, 0.5);
 }
 
 .btn-social {
@@ -106,6 +110,16 @@ body {
 
 .btn:hover {
     background: rgba(255, 255, 255, 0.15);
+}
+
+.btn-social:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.btn-primary:hover {
+    background: var(--accent-blue);
+    transform: translateY(-2px);
 }
 
 .capabilities {
